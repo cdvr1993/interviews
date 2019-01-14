@@ -6,22 +6,21 @@ def make_minimum_coin_change(options, target):
   Target is an integer of the change it has to return
   """
 
-  result = []
-  for coin in sorted(options, reverse=True):
-    if target < coin:
-      continue
+  dp = [[] for i in range(target + 1)]
 
-    amount, target = divmod(target, coin)
+  for idx in range(1, target + 1):
+    for opt in options:
+      if opt > idx:
+        break
 
-    result += [coin] * amount
+      if len(dp[idx]) == 0 or len(dp[idx]) > len(dp[idx - opt]) + 1:
+        dp[idx] = dp[idx - opt] + [opt]
 
-  if target > 0:
-    # It can't create the amount
+  if sum(dp[-1]) != target:
+    # It means it is not possible to reach target with these coins
     return None
 
-  return result
-
-
+  return dp[-1]
 
 
 def main():
